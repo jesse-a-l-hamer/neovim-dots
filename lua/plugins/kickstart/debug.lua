@@ -6,10 +6,9 @@ return {
     -- Required dependency for nvim-dap-ui
     "nvim-neotest/nvim-nio",
     -- Debugger-specific extensions
-    -- {
-    --   "mfussenegger/nvim-dap-python",
-    --   build = "rockspec",
-    -- },
+    {
+      "mfussenegger/nvim-dap-python",
+    },
   },
   keys = {
     {
@@ -98,7 +97,7 @@ return {
 
     -- Setup for specific debuggers
 
-    -- require("dap-python").setup("uv", { test_runner = "pytest" })
+    require("dap-python").setup("python3", { test_runner = "pytest" })
 
     dap.listeners.after.event_initialized["dapui_config"] = dapui.open
     dap.listeners.before.event_terminated["dapui_config"] = dapui.close
