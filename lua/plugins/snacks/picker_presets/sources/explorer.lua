@@ -1,0 +1,67 @@
+---@module 'snacks'
+return { ---@type snacks.picker.explorer.Config
+  hidden = true,
+  ignored = true,
+  -- actions = {
+  --   explorer_del = function(picker) --[[Override]]
+  --     local Tree = require "snacks.explorer.tree"
+  --     local paths = vim.tbl_map(Snacks.picker.util.path, picker:selected { fallback = true })
+  --     local what = #paths == 1 and "file" or #paths .. " files"
+  --     local get_filename = function(path)
+  --       return vim.fn.fnamemodify(path, ":p:~:.")
+  --     end
+  --     local confirm = function(prompt, files, fn)
+  --       vim.ui.select({ "Yes", "No" }, { prompt = vim.fn.join(vim.fn.extend({ prompt, "\n" }, vim.tbl_map(get_filename, files)), "\n") }, function(_, idx)
+  --         if idx == 1 then
+  --           fn()
+  --         end
+  --       end)
+  --     end
+  --     confirm("Trash the following " .. what .. "?", paths, function()
+  --       local jobs = #paths
+  --       local after_job = function()
+  --         jobs = jobs - 1
+  --         if jobs == 0 then
+  --           picker.list:set_selected()
+  --           picker:update()
+  --         end
+  --       end
+  --       for _, path in ipairs(paths) do
+  --         local err_data = {}
+  --         local wrong_os = vim.fn.has "win32" == 1
+  --         local cmd = { "trash", path } --[[Actual command to run]]
+  --         if wrong_os then
+  --           cmd = {
+  --             "powershell",
+  --             "-Command",
+  --                   -- stylua: ignore
+  --                   string.format([[(New-Object -ComObject Shell.Application).Namespace((Split-Path '%s')).ParseName((Split-Path '%s' -Leaf)).InvokeVerb('delete')]], path, path),
+  --           }
+  --         end
+  --         local job_id = vim.fn.jobstart(cmd, {
+  --           detach = not wrong_os,
+  --           on_stderr = function(_, data)
+  --             err_data[#err_data + 1] = table.concat(data, "\n")
+  --           end,
+  --           on_exit = function(_, code)
+  --             pcall(function()
+  --               if code == 0 then
+  --                 Snacks.bufdelete { file = path, force = true }
+  --               else
+  --                 local err_msg = vim.trim(table.concat(err_data, ""))
+  --                 Snacks.notify.error("Failed to delete `" .. path .. "`:\n- " .. err_msg)
+  --               end
+  --               Tree:refresh(vim.fs.dirname(path))
+  --             end)
+  --             after_job()
+  --           end,
+  --         })
+  --         if job_id == 0 then
+  --           after_job()
+  --           Snacks.notify.error("Failed to start the job for: " .. path)
+  --         end
+  --       end
+  --     end)
+  --   end,
+  -- },
+}
