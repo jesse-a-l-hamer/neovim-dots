@@ -7,13 +7,6 @@ vim.g.maplocalleader = " "
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- set Python provider environment, if found
--- vim.g.python3_host_prog = "$HOME/python_venvs/neovim-nightly/.venv/bin/python3"
-local neovim_python = vim.fn.expand "$HOME/envs/python/neovim/.venv/bin/python3"
-if vim.fn.filereadable(neovim_python) then
-  vim.g.python3_host_prog = neovim_python
-end
-
 -- disable perl to get rid of healthcheck warnings
 vim.g.loaded_perl_provider = 0
 
