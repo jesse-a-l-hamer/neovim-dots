@@ -24,7 +24,7 @@ local default_sources = function()
 end
 
 vim.g.lsp_client_info = {
-  ["^basedpyright"] = { name = "  BasedPyright" },
+  -- ["^basedpyright"] = { name = "  BasedPyright" },
   ["^bashls"] = { name = "󱆃 BashLS" },
   ["^beancount-language-server"] = { name = "  beancount-language-server" },
   ["^hyprls"] = { name = " hyprls" },
@@ -34,6 +34,7 @@ vim.g.lsp_client_info = {
   ["^taplo"] = { name = "  Taplo" },
   ["^texlab"] = { name = "  Lab" },
   ["^tinymist"] = { name = " Tinymist" },
+  ["^ty"] = { name = "  ty" },
   ["^yamlls"] = { name = " YamlLS" },
 }
 
