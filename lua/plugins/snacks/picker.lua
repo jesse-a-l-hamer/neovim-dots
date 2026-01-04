@@ -32,6 +32,19 @@ end
 
 -- put non-preset picker configs here
 local picker_config = { ---@type snacks.picker.Config
+  win = {
+    input = {
+      keys = {
+        ["<Esc>"] = { "close", mode = { "n", "i" } },
+        ["<c-y>"] = { "confirm", mode = { "n", "i" } },
+      },
+    },
+    list = {
+      keys = {
+        ["<c-y>"] = { "confirm", mode = { "n", "i" } },
+      },
+    },
+  },
 }
 
 return vim.tbl_extend("keep", picker_config, load_presets())
