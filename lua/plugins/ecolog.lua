@@ -2,6 +2,7 @@ return {
   "ssstba/ecolog.nvim",
   -- Lazy loading is done internally
   lazy = false,
+  branch = "v1",
   opts = {
     integrations = {
       blink_cmp = true,
