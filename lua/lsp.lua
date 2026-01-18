@@ -2,17 +2,27 @@
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
   callback = function(event)
-    local map = function(keys, func, desc, mode)
+    local map = function(keys, func, desc, mode, expr)
       mode = mode or "n"
-      vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
+      expr = expr or false
+      vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc, expr = expr })
     end
 
-    map("<leader>lrs", ":IncRename ", "Symbol", { "n", "x" })
+    map("<leader>lrs", function()
+      return ":IncRename " .. vim.fn.expand "<cword>"
+    end, "Symbol", { "n", "x" }, true)
     map("<leader>la", vim.lsp.buf.code_action, "Code action", { "n", "x" })
 
     local client = vim.lsp.get_client_by_id(event.data.client_id)
-    if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-      local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
+    if
+      client
+      and client.supports_method(
+        vim.lsp.protocol.Methods.textDocument_documentHighlight,
+        event.buf
+      )
+    then
+      local highlight_augroup =
+        vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
         buffer = event.buf,
         group = highlight_augroup,
@@ -29,7 +39,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
         callback = function(event2)
           vim.lsp.buf.clear_references()
-          vim.api.nvim_clear_autocmds { group = "kickstart-lsp-highlight", buffer = event2.buf }
+          vim.api.nvim_clear_autocmds {
+            group = "kickstart-lsp-highlight",
+            buffer = event2.buf,
+          }
         end,
       })
     end
@@ -37,15 +50,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- diagnostics configuration
-
--- Change diagnostic symbols in the sign column (gutter)
 local diagnostic_signs = {}
 if vim.g.have_nerd_font then
   local signs = { ERROR = " ", WARN = " ", INFO = " ", HINT = " " }
   for type, icon in pairs(signs) do
     diagnostic_signs[vim.diagnostic.severity[type]] = icon
   end
-  vim.diagnostic.config { signs = { text = diagnostic_signs } }
 end
 
 vim.diagnostic.config {
@@ -74,11 +84,7 @@ end
 -- enable rendered hovering
 
 -- per-LSP hover overrides
----@type table<string, hover.opts>
-local custom_hover_opts = vim.tbl_deep_extend("force", {
-  default = {
-    border_hl = "FloatBorder",
-  },
-}, vim.g.lsp_client_info) -- defined in plugins/blink_cmp.lua
+---@type { default: DocHoverOpts, [string]: DocHoverOpts } | nil
+local custom_hover_opts = nil
 
 require("util.lsp_hover").setup(custom_hover_opts)

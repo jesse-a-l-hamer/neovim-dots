@@ -2,39 +2,19 @@
 --- Slightly *fancier* LSP hover handler.
 local lsp_hover = {}
 
----@class hover.opts
----
----@field border_hl? string Highlight group for the window borders.
----@field name_hl? string Highlight group for the `name`. Defaults to `border_hl`.
----@field name string
----
----@field min_width? integer
----@field max_width? integer
----
----@field min_height? integer
----@field max_height? integer
-
 --- Configuration for lsp_hovers from different
 --- servers.
 ---
----@type { default: hover.opts, [string]: hover.opts }
-lsp_hover.config = {
-  default = {
-    border_hl = "Comment",
-    name = "  LSP/Hover",
-
-    min_width = 20,
-    max_width = math.floor(vim.o.columns * 0.75),
-
-    min_height = 1,
-    max_height = math.floor(vim.o.lines * 0.5),
-  },
-}
+---@type { default: DocHoverOpts, [string]: DocHoverOpts }
+lsp_hover.config = {}
+for client_name, client_info in pairs(vim.g.lsp_client_info) do
+  lsp_hover.config[client_name] = client_info.doc_hover_opts
+end
 
 --- Finds matching configuration.
 --- NOTE: The output is the merge of the {config} and {default}.
 ---@param str string
----@return hover.opts
+---@return DocHoverOpts
 local match = function(str)
   ---+${lua}
 
@@ -214,7 +194,7 @@ lsp_hover.hover = function(error, result, context, _)
   ---@type { name: string } LSP client info.
   local client = vim.lsp.get_client_by_id(client_id) or { name = "Unknown" }
 
-  ---@type hover.opts
+  ---@type DocHoverOpts
   local config = match(client.name)
 
   local w = config.min_width or 20
@@ -247,7 +227,10 @@ lsp_hover.hover = function(error, result, context, _)
 
     footer = {
       { "╼ ", config.border_hl or "FloatBorder" },
-      { config.name, config.name_hl or config.border_hl or "FloatBorder" },
+      {
+        config.footer_text,
+        config.footer_text_hl or config.border_hl or "FloatBorder",
+      },
       { " ╾", config.border_hl or "FloatBorder" },
     },
     footer_pos = "right",
@@ -314,18 +297,10 @@ lsp_hover.hover = function(error, result, context, _)
 
   vim.wo[lsp_hover.window].wrap = true
   vim.wo[lsp_hover.window].linebreak = true
-
-  if package.loaded["markview"] and package.loaded["markview"].render then
-    --- If markview is available use it to render stuff.
-    --- This is for `v25`.
-    require("markview").render(lsp_hover.buffer, { enable = true, hybrid_mode = false })
-  end
-
-  ---_
 end
 
 --- Setup function.
----@param config { default: hover.opts, [string]: hover.opts } | nil
+---@param config { default: DocHoverOpts, [string]: DocHoverOpts } | nil
 lsp_hover.setup = function(config)
   ---+${lua}
 
@@ -340,7 +315,12 @@ lsp_hover.setup = function(config)
           callback = function()
             local window = vim.api.nvim_get_current_win()
 
-            vim.lsp.buf_request(0, "textDocument/hover", vim.lsp.util.make_position_params(window, "utf-8"), lsp_hover.hover)
+            vim.lsp.buf_request(
+              0,
+              "textDocument/hover",
+              vim.lsp.util.make_position_params(window, "utf-8"),
+              lsp_hover.hover
+            )
           end,
         })
       end,

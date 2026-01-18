@@ -1,52 +1,162 @@
-local default_sources = function()
-  -- put those which will be shown always
-  local result = {
-    "lazydev",
-    "lsp",
-    "path",
-    "snippets",
-    "git",
-    "buffer",
-    "emoji",
-    "cmdline",
-    "omni",
-    "references",
-    "ecolog",
-    "sshconfig",
-    "fonts",
-    "dap",
-  }
+---@class CompletionSourceInfo
+---
+---@field doc_hover_opts? DocHoverOpts
+
+--- sources which are used under general circumstances
+---@type table<string, CompletionSourceInfo>
+local base_sources = {
+  lazydev = { doc_hover_opts = { footer_text = " lazydev" } },
+  lsp = { doc_hover_opts = { footer_text = " lsp" } },
+  path = { doc_hover_opts = { footer_text = " path" } },
+  snippets = { doc_hover_opts = { footer_text = " snippets" } },
+  git = { doc_hover_opts = { footer_text = " git" } },
+  buffer = { doc_hover_opts = { footer_text = " buffer" } },
+  emoji = { doc_hover_opts = { footer_text = " emoji" } },
+  cmdline = { doc_hover_opts = { footer_text = " cmdline" } },
+  omni = { doc_hover_opts = { footer_text = " omni" } },
+  references = { doc_hover_opts = { footer_text = " references" } },
+  ecolog = { doc_hover_opts = { footer_text = " ecolog" } },
+  sshconfig = { doc_hover_opts = { footer_text = "󰣀 sshconfig" } },
+  fonts = { doc_hover_opts = { footer_text = "󰀬 fonts" } },
+  dap = { doc_hover_opts = { footer_text = " dap" } },
+  css_vars = { doc_hover_opts = { footer_text = " css-vars" } },
+  ripgrep = { doc_hover_opts = { footer_text = " ripgrep" } },
+}
+
+--- sources which are only used under specific circumstances
+---@type table<string, CompletionSourceInfo>
+local optional_sources = {
+  dictionary = { doc_hover_opts = { footer_text = "󱓳 dictionary" } },
+  thesaurus = { doc_hover_opts = { footer_text = "󰗛 thesaurus" } },
+}
+
+local default_sources = function(ctx)
   local success, node = pcall(vim.treesitter.get_node)
-  if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment" }, node:type()) then
-    return { "buffer", "dictionary", "emoji" }
+  -- check if we're in a special node and can return a subset of providers...
+  if
+    success
+    and node
+    and vim.tbl_contains({ "comment", "line_comment", "block_comment" }, node:type())
+  then
+    return { "buffer", "dictionary", "thesaurus", "emoji" }
   end
-  return result
+  -- ...otherwise just return the base providers
+  return vim.tbl_keys(base_sources)
 end
 
-vim.g.lsp_client_info = {
-  -- ["^basedpyright"] = { name = "  BasedPyright" },
-  ["^bashls"] = { name = "󱆃 BashLS" },
-  ["^beancount-language-server"] = { name = "  beancount-language-server" },
-  ["^hyprls"] = { name = " hyprls" },
-  ["^lua_ls"] = { name = "  LuaLS" },
-  ["^marksman"] = { name = "  Marksman" },
-  ["^ruff"] = { name = "  Ruff" },
-  ["^taplo"] = { name = "  Taplo" },
-  ["^texlab"] = { name = "  Lab" },
-  ["^tinymist"] = { name = " Tinymist" },
-  ["^ty"] = { name = "  ty" },
-  ["^yamlls"] = { name = " YamlLS" },
-}
+---@param opts blink.cmp.CompletionDocumentationDrawOpts
+local update_doc_win_config = function(opts)
+  local win_config = {}
+  local buf = opts.window:get_buf()
+
+  ---@type { default: DocHoverOpts, [string]: DocHoverOpts }
+  local source_doc_hover_opts = {
+    default = {
+      border_hl = "FloatBorder",
+      footer_text = "",
+      footer_text_hl = "FloatBorder",
+    },
+  }
+  for source_id, source_info in
+    pairs(vim.tbl_extend("error", base_sources, optional_sources))
+  do
+    source_doc_hover_opts[source_id] = source_info.doc_hover_opts
+  end
+  local source_ids = vim.tbl_keys(source_doc_hover_opts)
+  table.sort(source_ids)
+
+  ---@type table<string,DocHoverOpts>
+  local lsp_doc_hover_opts = {}
+  for client_name, client_info in pairs(vim.g.lsp_client_info) do
+    lsp_doc_hover_opts[client_name] = client_info.doc_hover_opts
+  end
+  local lsp_client_names = vim.tbl_keys(lsp_doc_hover_opts)
+  table.sort(lsp_client_names)
+
+  local source_id = opts.item.source_id
+  local client_name = opts.item.client_name
+  local ignore = { "default" }
+
+  ---@type DocHoverOpts
+  local doc_hover_opts = source_doc_hover_opts.default
+
+  if source_id == "lsp" and client_name then
+    doc_hover_opts = vim.tbl_extend("force", doc_hover_opts, lsp_doc_hover_opts.default)
+    for _, k in ipairs(lsp_client_names) do
+      if vim.list_contains(ignore, k) == false and string.match(client_name, k) then
+        doc_hover_opts = vim.tbl_extend("force", doc_hover_opts, lsp_doc_hover_opts[k])
+        break
+      end
+    end
+  else
+    for _, k in ipairs(source_ids) do
+      if vim.list_contains(ignore, k) == false and string.match(source_id, k) then
+        doc_hover_opts =
+          vim.tbl_extend("force", doc_hover_opts, source_doc_hover_opts[k])
+        break
+      end
+    end
+  end
+
+  if doc_hover_opts.footer_text then
+    win_config.footer = {
+      { "╼ ", doc_hover_opts.border_hl or "FloatBorder" },
+      {
+        doc_hover_opts.footer_text,
+        doc_hover_opts.footer_text_hl or doc_hover_opts.border_hl or "FloatBorder",
+      },
+      { " ╾", doc_hover_opts.border_hl or "FloatBorder" },
+    }
+    win_config.footer_pos = "right"
+  end
+
+  if vim.g.__reg_doc ~= true then
+    vim.treesitter.language.register("markdown", "blink-cmp-documentation")
+    vim.g.__reg_doc = true
+  end
+
+  if package.loaded["render-markdown"] then
+    local win = opts.window:get_win()
+
+    if win then
+      vim.wo[win].conceallevel = 3
+      if win_config then
+        vim.api.nvim_win_set_config(
+          win,
+          vim.tbl_deep_extend("force", vim.api.nvim_win_get_config(win), win_config)
+        )
+      end
+      vim.bo[buf].ft = "markdown"
+      require("render-markdown.core.ui").update(buf, win, "BlinkDraw", true)
+      vim.bo[buf].ft = "blink-cmp-documentation"
+    end
+
+    vim.defer_fn(function()
+      win = opts.window:get_win()
+
+      if win then
+        vim.wo[win].signcolumn = "no"
+        vim.wo[win].conceallevel = 3
+        if win_config then
+          vim.api.nvim_win_set_config(
+            win,
+            vim.tbl_deep_extend("force", vim.api.nvim_win_get_config(win), win_config)
+          )
+        end
+        vim.bo[buf].ft = "markdown"
+        require("render-markdown.core.ui").update(buf, win, "BlinkDraw", true)
+        vim.bo[buf].ft = "blink-cmp-documentation"
+      end
+    end, 25)
+  end
+end
 
 return {
   {
-    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-    -- used for completion, annotations and signatures of Neovim apis
     "folke/lazydev.nvim",
     ft = "lua",
     opts = {
       library = {
-        -- Load luvit types when the `vim.uv` word is found
         { path = "luvit-meta/library", words = { "vim%.uv" } },
       },
     },
@@ -59,16 +169,20 @@ return {
   },
   {
     "saghen/blink.cmp",
-    -- optional: provides snippets for the snippet source
     dependencies = {
+      "MeanderingProgrammer/render-markdown.nvim",
+      "xzbdmw/colorful-menu.nvim",
+      "onsails/lspkind.nvim",
       "rafamadriz/friendly-snippets",
+
+      -- provider dependencies:
+
       "moyiz/blink-emoji.nvim",
       "archie-judd/blink-cmp-words",
       {
         "Kaiser-Yang/blink-cmp-git",
         dependencies = { "nvim-lua/plenary.nvim" },
       },
-      "xzbdmw/colorful-menu.nvim",
       "jmbuhr/cmp-pandoc-references",
       {
         "bydlw98/blink-cmp-sshconfig",
@@ -76,26 +190,33 @@ return {
       },
       "amarakon/nvim-cmp-fonts",
       "rcarriga/cmp-dap",
+      "jdrupal-dev/css-vars.nvim",
+      { "mikavilpas/blink-ripgrep.nvim", version = "*" },
     },
-
-    -- use a release tag to download pre-built binaries
     version = "*",
-    -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
     build = "cargo build --release",
-    -- If you use nix, you can build from source using latest nightly rust with:
-    -- build = 'nix run .#build-plugin',
-
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-      keymap = { preset = "default" },
+      keymap = {
+        preset = "default",
+        ["<C-g>"] = {
+          function()
+            require("blink-cmp").show { providers = { "ripgrep" } }
+          end,
+        },
+        ["<C-u>"] = { "scroll_signature_up", "fallback" },
+        ["<C-d>"] = { "scroll_signature_down", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+      },
       appearance = {
         nerd_font_variant = "mono",
       },
       completion = {
         menu = {
-          border = "rounded",
           draw = {
+            padding = { 0, 1 }, -- padding only on right side
             columns = {
               { "kind_icon" },
               { "label", gap = 1 },
@@ -111,21 +232,15 @@ return {
                       icon = dev_icon
                     end
                   else
-                    icon = require("lspkind").symbolic(ctx.kind, {
-                      mode = "symbol",
-                    })
+                    icon = require("lspkind").symbol_map[ctx.kind] or ""
                   end
-
-                  return icon .. ctx.icon_gap
+                  return " " .. icon .. ctx.icon_gap .. " "
                 end,
-
-                -- Optionally, use the highlight groups from nvim-web-devicons
-                -- You can also add the same function for `kind.highlight` if you want to
-                -- keep the highlight groups in sync with the icons.
                 highlight = function(ctx)
                   local hl = ctx.kind_hl
                   if vim.tbl_contains({ "Path" }, ctx.source_name) then
-                    local dev_icon, dev_hl = require("nvim-web-devicons").get_icon(ctx.label)
+                    local dev_icon, dev_hl =
+                      require("nvim-web-devicons").get_icon(ctx.label)
                     if dev_icon then
                       hl = dev_hl
                     end
@@ -134,11 +249,30 @@ return {
                 end,
               },
               label = {
+                width = { fill = true, max = 60 },
                 text = function(ctx)
-                  return require("colorful-menu").blink_components_text(ctx)
+                  local highlights_info = require("colorful-menu").blink_highlights(ctx)
+                  if highlights_info ~= nil then
+                    -- Or you want to add more item to label
+                    return highlights_info.label
+                  else
+                    return ctx.label
+                  end
                 end,
                 highlight = function(ctx)
-                  return require("colorful-menu").blink_components_highlight(ctx)
+                  local highlights = {}
+                  local highlights_info = require("colorful-menu").blink_highlights(ctx)
+                  if highlights_info ~= nil then
+                    highlights = highlights_info.highlights
+                  end
+                  for _, idx in ipairs(ctx.label_matched_indices) do
+                    table.insert(
+                      highlights,
+                      { idx, idx + 1, group = "BlinkCmpLabelMatch" }
+                    )
+                  end
+                  -- Do something else
+                  return highlights
                 end,
               },
             },
@@ -150,107 +284,13 @@ return {
           auto_show = true,
           auto_show_delay_ms = 0,
           window = {
-            border = "rounded",
-            min_width = 30,
+            min_width = 20,
+            max_width = math.floor(vim.o.columns * 0.75),
+            max_height = math.floor(vim.o.lines * 0.5),
           },
-          draw = function(data)
-            ---|fS
-
-            ---@type integer
-            local buf = data.window.buf
-            ---@type integer
-            local src_buf = vim.api.nvim_get_current_buf()
-
-            ---@type string[]
-            local lines = {}
-
-            if data.item and data.item.documentation then
-              lines = vim.split(data.item.documentation.value or "", "\n", { trimempty = true })
-            end
-
-            ---@type string[]
-            local details = vim.split(data.item.detail or "", "\n", { trimempty = true })
-
-            if #details > 0 then
-              table.insert(details, 1, string.format("```%s", vim.bo[src_buf].ft or ""))
-              table.insert(details, "```")
-
-              if #lines > 0 then
-                details = vim.list_extend(details, {
-                  "",
-                  "Detail: ",
-                  "--------",
-                  "",
-                })
-              end
-            end
-
-            local visible_lines = vim.list_extend(details, lines)
-            vim.api.nvim_buf_set_lines(buf, 0, -1, false, visible_lines)
-
-            if vim.g.__reg_doc ~= true then
-              vim.treesitter.language.register("markdown", "blink-cmp-documentation")
-              vim.g.__reg_doc = true
-            end
-
-            local footer = nil
-            if data.item.source_id == "lsp" then
-              footer = {
-                { "╼ ", "BlinkCmpDocBorder" },
-                { "  LSP/Docs", "BlinkCmpDocBorder" },
-                { " ╾", "BlinkCmpDocBorder" },
-              }
-              local lsp_client_info = vim.g.lsp_client_info
-              for k, v in pairs(lsp_client_info) do
-                if string.match(data.item.client_name, k) then
-                  footer[2][1] = v.name
-                end
-              end
-            end
-
-            if package.loaded["markview"] then
-              local win = data.window:get_win()
-
-              if win then
-                vim.wo[win].conceallevel = 3
-                if footer then
-                  vim.api.nvim_win_set_config(
-                    win,
-                    vim.tbl_deep_extend("force", vim.api.nvim_win_get_config(win), {
-                      footer = footer,
-                      footer_pos = "right",
-                    })
-                  )
-                end
-                vim.bo[buf].ft = "markdown"
-                require("markview").render(buf, { enable = true, hybrid_mode = false })
-                vim.bo[buf].ft = "blink-cmp-documentation"
-              end
-
-              vim.defer_fn(function()
-                win = data.window:get_win()
-
-                if win then
-                  vim.wo[win].signcolumn = "no"
-                  vim.wo[win].conceallevel = 3
-                  if footer then
-                    vim.api.nvim_win_set_config(
-                      win,
-                      vim.tbl_deep_extend("force", vim.api.nvim_win_get_config(win), {
-                        footer = footer,
-                        footer_pos = "right",
-                      })
-                    )
-                  end
-                end
-
-                vim.bo[buf].ft = "markdown"
-                require("markview").render(buf, { enable = true, hybrid_mode = false })
-                vim.bo[buf].ft = "blink-cmp-documentation"
-              end, 25)
-            end
-
-            ---|fE
+          draw = function(opts)
+            opts.default_implementation()
+            update_doc_win_config(opts)
           end,
         },
         ghost_text = { enabled = true, show_with_selection = true },
@@ -259,9 +299,10 @@ return {
       -- NOTE: custom docs drawing for signature help not yet supported (2025-07-23)
       signature = {
         enabled = true,
+        trigger = { enabled = false },
         window = {
-          border = "rounded",
-          show_documentation = true,
+          winblend = 10,
+          scrollbar = true,
         },
       },
       cmdline = {
@@ -269,7 +310,6 @@ return {
         keymap = { preset = "inherit" },
       },
       sources = {
-        -- dynamically pick providers by treesitter node/filetype
         default = default_sources,
         per_filetype = {
           markdown = {
@@ -311,12 +351,7 @@ return {
               end,
             },
             should_show_items = function()
-              return vim.tbl_contains(
-                -- Enable emoji completion only for git commits and markdown.
-                -- By default, enabled for all file-types.
-                { "gitcommit", "markdown" },
-                vim.o.filetype
-              )
+              return vim.tbl_contains({ "gitcommit", "markdown" }, vim.o.filetype)
             end,
           },
           dictionary = {
@@ -375,11 +410,31 @@ return {
             module = "blink.compat.source",
             enabled = function()
               return (vim.bo.buftype ~= "prompt" or require("cmp_dap").is_dap_buffer())
-                and (vim.tbl_contains({ "dap-repl", "dapui_watches", "dapui_hover" }, vim.o.filetype))
+                and (
+                  vim.tbl_contains(
+                    { "dap-repl", "dapui_watches", "dapui_hover" },
+                    vim.o.filetype
+                  )
+                )
             end,
             opts = {
               cmp_name = "DAP",
             },
+          },
+          css_vars = {
+            name = "css-vars",
+            module = "css-vars.blink",
+            opts = {
+              search_extensions = { ".js", ".ts", ".jsx", ".tsx" },
+            },
+          },
+          ripgrep = {
+            name = "Ripgrep",
+            module = "blink-ripgrep",
+            ---@module "blink-ripgrep"
+            ---@type blink-ripgrep.Options
+            opts = {},
+            score_offset = -10,
           },
         },
       },
