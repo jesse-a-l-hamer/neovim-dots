@@ -1,14 +1,41 @@
 return {
   "MeanderingProgrammer/render-markdown.nvim",
-  -- dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-  -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-  dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
+  dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   ---@module 'render-markdown'
   ---@type render.md.UserConfig
   opts = {
-    completions = { lsp = { enabled = true } },
-    pipe_table = { preset = "round", border_virtual = true },
+    render_modes = true,
+    on = {},
+    debounce = 50,
+    file_types = { "markdown", "blink-cmp-documentation" },
+    completions = { lsp = { enabled = true }, blink = { enabled = true } },
+    heading = {
+      width = "block",
+      min_width = 30,
+    },
+    pipe_table = { preset = "round", border_virtual = true, cell = "trimmed" },
     dash = { width = 88 },
-    -- indent = { enabled = true, skip_heading = true },
+    code = {
+      language_border = " ",
+      language_left = "",
+      language_right = "",
+      width = "block",
+      min_width = 44,
+    },
+    quote = { repeat_linebreak = true },
+    win_options = {
+      showbreak = {
+        default = "",
+        rendered = "  ",
+      },
+      breakindent = {
+        default = false,
+        rendered = true,
+      },
+      breakindentopt = {
+        default = "",
+        rendered = "",
+      },
+    },
   },
 }
