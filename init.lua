@@ -1,41 +1,6 @@
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
-
--- disable perl to get rid of healthcheck warnings
-vim.g.loaded_perl_provider = 0
-
--- enable Snakcs.profiler on startup
-if vim.env.PROF then
-  local snacks = vim.fn.stdpath "data" .. "/lazy/snacks.nvim"
-  vim.opt.rtp:append(snacks)
-  require("snacks.profiler").startup {
-    startup = {
-      event = "VimEnter", -- stop profiler on this event. Defaults to `VimEnter`
-      -- event = "UIEnter",
-      -- event = "VeryLazy",
-    },
-  }
-end
-
--- add custom filetypes
-vim.filetype.add {
-  extension = {
-    jinja = "jinja",
-    jinja2 = "jinja",
-    j2 = "jinja",
-    kvconfig = "kvantum",
-    beancount = "beancount",
-    bean = "beancount",
-  },
-}
-
--- [[ Setting options ]]
+require "globals"
+require "filetypes"
+require "profiler"
 require "options"
 
 -- [[ Basic Keymaps ]]
