@@ -3,7 +3,12 @@
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Dismiss active search HL" })
+vim.keymap.set(
+  "n",
+  "<Esc>",
+  "<cmd>nohlsearch<CR>",
+  { desc = "Dismiss active search HL" }
+)
 
 -- Easy write/quit shortcuts
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Write buffer" })
@@ -18,7 +23,12 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 vim.keymap.set("n", "<leader>ld", function()
   vim.diagnostic.open_float { scope = "cursor" }
 end, { desc = "Show diagnostics at cursor" })
-vim.keymap.set("n", "<leader>lD", vim.diagnostic.open_float, { desc = "Show diagnostics in line" })
+vim.keymap.set(
+  "n",
+  "<leader>lD",
+  vim.diagnostic.open_float,
+  { desc = "Show diagnostics in line" }
+)
 
 -- Keybinds to make split navigation easier.
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Focus left window" })
@@ -29,16 +39,26 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Focus upper window" })
 -- Keybinds to make window resizing easier.
 vim.keymap.set("n", "<C-Up>", "<Cmd>resize -2<CR>", { desc = "Resize split up" })
 vim.keymap.set("n", "<C-Down>", "<Cmd>resize +2<CR>", { desc = "Resize split down" })
-vim.keymap.set("n", "<C-Left>", "<Cmd>vertical resize -2<CR>", { desc = "Resize split left" })
-vim.keymap.set("n", "<C-Right>", "<Cmd>vertical resize +2<CR>", { desc = "Resize split right" })
+vim.keymap.set(
+  "n",
+  "<C-Left>",
+  "<Cmd>vertical resize -2<CR>",
+  { desc = "Resize split left" }
+)
+vim.keymap.set(
+  "n",
+  "<C-Right>",
+  "<Cmd>vertical resize +2<CR>",
+  { desc = "Resize split right" }
+)
 
 if vim.opt.mouse == "" then
-  vim.keymap.set({"n", "v", "i", "c"}, "<ScrollWheelUp>", "<C-y>")
-  vim.keymap.set({"n", "v", "i", "c"}, "<ScrollWheelDown>", "<C-e>")
-  vim.keymap.set({"n", "v", "i", "c"}, "<S-ScrollWheelUp>", "<C-u>")
-  vim.keymap.set({"n", "v", "i", "c"}, "<S-ScrollWheelDown>", "<C-d>")
-  vim.keymap.set({"n", "v", "i", "c"}, "<C-ScrollWheelUp>", "k")
-  vim.keymap.set({"n", "v", "i", "c"}, "<C-ScrollWheelDown>", "j")
+  vim.keymap.set({ "n", "v", "i", "c" }, "<ScrollWheelUp>", "<C-y>")
+  vim.keymap.set({ "n", "v", "i", "c" }, "<ScrollWheelDown>", "<C-e>")
+  vim.keymap.set({ "n", "v", "i", "c" }, "<S-ScrollWheelUp>", "<C-u>")
+  vim.keymap.set({ "n", "v", "i", "c" }, "<S-ScrollWheelDown>", "<C-d>")
+  vim.keymap.set({ "n", "v", "i", "c" }, "<C-ScrollWheelUp>", "k")
+  vim.keymap.set({ "n", "v", "i", "c" }, "<C-ScrollWheelDown>", "j")
 end
 
 -- [[ Basic Autocommands ]]

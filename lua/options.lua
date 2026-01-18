@@ -1,5 +1,6 @@
 vim.opt.number = true
 vim.opt.relativenumber = true
+-- [[ Configure global options (i.e., vim.o.<...>) ]]
 
 -- mouse settings
 vim.opt.mouse = "a"
