@@ -1,61 +1,56 @@
-vim.opt.number = true
-vim.opt.relativenumber = true
 -- [[ Configure global options (i.e., vim.o.<...>) ]]
+vim.o.number = true
+vim.o.relativenumber = true
 
 -- mouse settings
-vim.opt.mouse = "a"
-vim.opt.mousescroll = "ver:1,hor:1"
+vim.o.mouse = "a"
+vim.o.mousescroll = "ver:1,hor:1"
 
-vim.opt.showmode = false
+vim.o.showmode = false
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.schedule(function()
-  vim.opt.clipboard = "unnamedplus"
+  vim.o.clipboard = "unnamedplus"
 end)
 
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 4
-vim.opt.tabstop = 4
+vim.o.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
 
-vim.opt.wrap = true
+vim.o.wrap = true
 
-vim.opt.breakindent = true
-vim.opt.showbreak = ""
+vim.o.breakindent = true
+vim.o.showbreak = ""
 
--- Save undo history
-vim.opt.undofile = true
+vim.o.undofile = true
 
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
 
-vim.opt.signcolumn = "yes"
-vim.opt.colorcolumn = "88"
+vim.o.signcolumn = "yes"
+vim.o.colorcolumn = "88"
 
-vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300
+vim.o.updatetime = 250
+vim.o.timeoutlen = 300
 
-vim.opt.splitright = true
-vim.opt.splitbelow = true
+vim.o.splitright = true
+vim.o.splitbelow = true
 
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.o.list = true
+vim.o.listchars = "tab:» ,trail:·,nbsp:␣"
 
--- Preview substitutions live, as you type!
-vim.opt.inccommand = "split"
+vim.o.inccommand = "split"
 
-vim.opt.cursorline = true
-vim.opt.scrolloff = 10
+vim.o.cursorcolumn = true
+vim.o.cursorline = true
+vim.o.scrolloff = 10
 
--- Transparency options
--- vim.opt.pumblend = 10 -- popup menu
--- vim.opt.winblend = 10 -- floating windows
+vim.o.winborder = "rounded"
+vim.o.pumblend = 10 -- popup menu
+vim.o.winblend = 10 -- floating windows
 
-vim.opt.dictionary = "/usr/share/dict/words"
+vim.o.dictionary = "/usr/share/dict/words"
 -- vim: ts=2 sts=2 sw=2 et
