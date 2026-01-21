@@ -48,6 +48,7 @@ vim.g.lsp_client_info = {
   ["^hyprls"] = { doc_hover_opts = { footer_text = " hyprls" } },
   ["^lua_ls"] = { doc_hover_opts = { footer_text = "  LuaLS" } },
   ["^marksman"] = { doc_hover_opts = { footer_text = "  Marksman" } },
+  ["^mutt_ls"] = { doc_hover_opts = { footer_text = "󰺻  mutt-language-server" } },
   ["^ruff"] = { doc_hover_opts = { footer_text = "  Ruff" } },
   ["^systemd_ls"] = {
     doc_hover_opts = { footer_text = "  systemd-language-server" },
