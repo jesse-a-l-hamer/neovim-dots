@@ -20,7 +20,6 @@ local base_sources = {
   fonts = { doc_hover_opts = { footer_text = "󰀬 fonts" } },
   dap = { doc_hover_opts = { footer_text = " dap" } },
   css_vars = { doc_hover_opts = { footer_text = " css-vars" } },
-  ripgrep = { doc_hover_opts = { footer_text = " ripgrep" } },
 }
 
 --- sources which are only used under specific circumstances
@@ -194,7 +193,6 @@ return {
       "amarakon/nvim-cmp-fonts",
       "rcarriga/cmp-dap",
       "jdrupal-dev/css-vars.nvim",
-      { "mikavilpas/blink-ripgrep.nvim", version = "*" },
     },
     version = "*",
     build = "cargo build --release",
@@ -203,11 +201,6 @@ return {
     opts = {
       keymap = {
         preset = "default",
-        ["<C-g>"] = {
-          function()
-            require("blink-cmp").show { providers = { "ripgrep" } }
-          end,
-        },
         ["<C-u>"] = { "scroll_signature_up", "fallback" },
         ["<C-d>"] = { "scroll_signature_down", "fallback" },
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
@@ -430,14 +423,6 @@ return {
             opts = {
               search_extensions = { ".js", ".ts", ".jsx", ".tsx" },
             },
-          },
-          ripgrep = {
-            name = "Ripgrep",
-            module = "blink-ripgrep",
-            ---@module "blink-ripgrep"
-            ---@type blink-ripgrep.Options
-            opts = {},
-            score_offset = -10,
           },
         },
       },
