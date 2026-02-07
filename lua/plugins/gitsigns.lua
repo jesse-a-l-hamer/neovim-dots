@@ -1,8 +1,12 @@
----@module 'gitsigns'
+---@module "gitsigns"
+---@module "lazy"
+
+---@type LazyPluginSpec[]
 return {
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+  {
     "lewis6991/gitsigns.nvim",
-    opts = { ---@type Gitsigns.config
+    ---@type Gitsigns.config
+    opts = {
       signs = {
         add = { text = "+" },
         change = { text = "~" },
@@ -58,7 +62,12 @@ return {
           gitsigns.diffthis "@"
         end, { desc = "Against last commit" })
         -- Toggles
-        map("n", "<leader>gD", gitsigns.preview_hunk_inline, { desc = "Toggle show deleted" })
+        map(
+          "n",
+          "<leader>gD",
+          gitsigns.preview_hunk_inline,
+          { desc = "Toggle show deleted" }
+        )
       end,
     },
   },

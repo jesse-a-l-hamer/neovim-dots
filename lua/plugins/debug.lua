@@ -1,10 +1,10 @@
+---@module "lazy"
+
+---@type LazyPluginSpec
 return {
   "mfussenegger/nvim-dap",
-  -- build = "rockspec",
   dependencies = {
-    "rcarriga/nvim-dap-ui",
-    -- Required dependency for nvim-dap-ui
-    "nvim-neotest/nvim-nio",
+    { "rcarriga/nvim-dap-ui", dependencies = { { "nvim-neotest/nvim-nio" } } },
     -- Debugger-specific extensions
     {
       "mfussenegger/nvim-dap-python",
@@ -87,11 +87,24 @@ return {
 
     -- Change breakpoint icons
     local breakpoint_icons = vim.g.have_nerd_font
-        and { Breakpoint = "", BreakpointCondition = "", BreakpointRejected = "", LogPoint = "", Stopped = " " }
-      or { Breakpoint = "●", BreakpointCondition = "⊜", BreakpointRejected = "⊘", LogPoint = "◆", Stopped = "⭔" }
+        and {
+          Breakpoint = "",
+          BreakpointCondition = "",
+          BreakpointRejected = "",
+          LogPoint = "",
+          Stopped = " ",
+        }
+      or {
+        Breakpoint = "●",
+        BreakpointCondition = "⊜",
+        BreakpointRejected = "⊘",
+        LogPoint = "◆",
+        Stopped = "⭔",
+      }
     for type, icon in pairs(breakpoint_icons) do
       local tp = "Dap" .. type
-      local hl = (vim.tbl_contains(vim.tbl_keys(package.loaded), "catppuccin") and tp) or ((type == "Stopped") and "DapStop" or "DapBreak")
+      local hl = (vim.tbl_contains(vim.tbl_keys(package.loaded), "catppuccin") and tp)
+        or ((type == "Stopped") and "DapStop" or "DapBreak")
       vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
     end
 

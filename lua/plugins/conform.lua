@@ -1,8 +1,9 @@
+---@module "lazy"
+
+---@type LazyPluginSpec[]
 return {
   {
     "stevearc/conform.nvim",
-    -- uncomment the following line to enable autoformat on save
-    -- event = { "BufWritePre" },
     cmd = { "ConformInfo" },
     keys = {
       {
