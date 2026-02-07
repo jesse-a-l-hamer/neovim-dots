@@ -9,9 +9,6 @@ vim.g.maplocalleader = " "
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- disable perl to get rid of healthcheck warnings
-vim.g.loaded_perl_provider = 0
-
 ---@class DocHoverOpts
 ---
 ---@field border_hl? string
