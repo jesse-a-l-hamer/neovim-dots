@@ -1,4 +1,5 @@
 local colors = require("catppuccin.palettes").get_palette "macchiato"
+local noice_api_status = require "noice.api.status"
 
 ---@module 'lazy'
 
@@ -11,39 +12,47 @@ return {
       options = {
         theme = "catppuccin",
         globalstatus = true,
+        always_divide_middle = true,
       },
       extensions = {
         "lazy",
         "man",
-        "mason",
         "nvim-dap-ui",
+        "trouble",
       },
       sections = {
+        lualine_b = {
+          "branch",
+          "diff",
+          "tabs",
+          "windows",
+        },
+        lualine_c = { "filetype", "lsp_status", "diagnostics" },
         lualine_x = {
           {
-            require("noice").api.status.message.get_hl,
-            cond = require("noice").api.status.message.has,
+            noice_api_status.message.get_hl,
+            cond = noice_api_status.message.has,
           },
           {
-            require("noice").api.status.command.get,
-            cond = require("noice").api.status.command.has,
+            noice_api_status.command.get,
+            cond = noice_api_status.command.has,
             color = { fg = colors.peach },
           },
           {
-            require("noice").api.status.mode.get,
-            cond = require("noice").api.status.mode.has,
+            noice_api_status.mode.get,
+            cond = noice_api_status.mode.has,
             color = { fg = colors.peach },
           },
           {
-            require("noice").api.status.search.get,
-            cond = require("noice").api.status.search.has,
+            noice_api_status.search.get,
+            cond = noice_api_status.search.has,
             color = { fg = colors.peach },
           },
         },
         lualine_y = {
           "encoding",
           "fileformat",
-          "filetype",
+
           "progress",
           "location",
           "vim.api.nvim_buf_line_count(0)",
@@ -69,7 +78,7 @@ return {
         -- Set it to the lualine section you want to use
         hl_group = "lualine_c_normal",
       }
-      table.insert(opts.sections.lualine_c or { "filename" }, {
+      table.insert(opts.sections.lualine_c or { "filetype" }, {
         symbols.get,
         cond = symbols.has,
       })
