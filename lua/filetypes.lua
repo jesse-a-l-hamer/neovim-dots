@@ -1,4 +1,5 @@
 -- [[ Define custom filetypes ]]
+
 vim.filetype.add {
   extension = {
     jinja = "jinja",
@@ -7,5 +8,6 @@ vim.filetype.add {
     kvconfig = "kvantum",
     beancount = "beancount",
     bean = "beancount",
+    neomuttrc = "neomuttrc",
   },
 }
