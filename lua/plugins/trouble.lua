@@ -1,6 +1,7 @@
 ---@module 'lazy'
 
-return { ---@type LazyPluginSpec
+---@type LazyPluginSpec
+return {
   "folke/trouble.nvim",
   specs = {
     "folke/snacks.nvim",

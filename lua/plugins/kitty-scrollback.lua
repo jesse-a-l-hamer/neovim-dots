@@ -1,3 +1,6 @@
+---@module 'lazy'
+
+---@type LazyPluginSpec
 return {
   "mikesmithgh/kitty-scrollback.nvim",
   enabled = true,

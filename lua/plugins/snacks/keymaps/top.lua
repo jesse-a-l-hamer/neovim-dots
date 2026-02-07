@@ -1,6 +1,8 @@
 ---@module 'lazy'
 ---@module 'snacks'
-return { ---@type LazyKeysSpec[]
+
+---@type LazyKeysSpec[]
+return {
   {
     "<leader>N",
     desc = "Neovim News",

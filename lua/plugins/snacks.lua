@@ -56,7 +56,8 @@ local enable_toggles = function()
   end
 end
 
-return { ---@type LazyPluginSpec
+---@type LazyPluginSpec
+return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,

@@ -1,3 +1,6 @@
+---@module 'lazy'
+
+---@type LazyPluginSpec
 return {
   "folke/noice.nvim",
   event = "VeryLazy",

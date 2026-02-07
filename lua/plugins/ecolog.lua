@@ -1,3 +1,6 @@
+---@module 'lazy'
+
+---@type LazyPluginSpec
 return {
   "ssstba/ecolog.nvim",
   -- Lazy loading is done internally

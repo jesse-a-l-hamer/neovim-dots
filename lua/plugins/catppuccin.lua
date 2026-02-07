@@ -2,7 +2,9 @@ local accent_color = "flamingo"
 
 ---@module 'lazy'
 ---@module 'catppuccin'
-return { ---@type LazyPluginSpec
+
+---@type LazyPluginSpec
+return {
   "catppuccin/nvim",
   name = "catppuccin",
   priority = 1000,

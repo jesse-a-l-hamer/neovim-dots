@@ -1,5 +1,7 @@
 ---@module 'lazy'
-return { ---@type LazyPluginSpec
+
+---@type LazyPluginSpec
+return {
   "sindrets/winshift.nvim",
   event = "VeryLazy",
   keys = {

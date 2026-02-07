@@ -1,5 +1,8 @@
 local colors = require("catppuccin.palettes").get_palette "macchiato"
 
+---@module 'lazy'
+
+---@type LazyPluginSpec[]
 return {
   {
     "nvim-lualine/lualine.nvim",

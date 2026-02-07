@@ -151,6 +151,9 @@ local update_doc_win_config = function(opts)
   end
 end
 
+---@module 'lazy'
+
+---@type LazyPluginSpec[]
 return {
   {
     "folke/lazydev.nvim",
