@@ -44,7 +44,7 @@ vim.o.listchars = "tab:» ,trail:·,nbsp:␣"
 
 vim.o.inccommand = "split"
 
-vim.o.cursorcolumn = true
+-- vim.o.cursorcolumn = true
 vim.o.cursorline = true
 vim.o.scrolloff = 10
 
