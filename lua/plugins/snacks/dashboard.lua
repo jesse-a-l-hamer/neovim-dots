@@ -27,7 +27,7 @@ return { ---@type snacks.dashboard.Config
       section = "terminal",
       cmd = "colorscript -e dna",
       indent = 3,
-      height = 5,
+      height = 7,
       padding = 1,
     },
     { section = "startup" },
