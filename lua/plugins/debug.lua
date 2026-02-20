@@ -109,8 +109,22 @@ return {
     end
 
     -- Setup for specific debuggers
+    local dap_python = require("dap-python")
 
-    require("dap-python").setup("python3", { test_runner = "pytest" })
+    dap_python.setup("python3", {
+      console = "integratedTerminal"
+    })
+    dap_python.test_runner = "pytest"
+    for i, t in ipairs(dap.configurations.python) do
+      if t.type == "python" then
+        dap.configurations.python[i] = vim.tbl_extend("force", t, {
+          jinja = true,
+          justMyCode = false,
+          redirectOutput = true,
+          showReturnValue = true,
+        })
+      end
+    end
 
     dap.listeners.after.event_initialized["dapui_config"] = dapui.open
     dap.listeners.before.event_terminated["dapui_config"] = dapui.close
