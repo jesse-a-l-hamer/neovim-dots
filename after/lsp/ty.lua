@@ -8,7 +8,12 @@
 
 ---@type vim.lsp.Config
 return {
-  cmd = { 'ty', 'server' },
-  filetypes = { 'python' },
-  root_markers = { 'ty.toml', 'pyproject.toml', '.git' },
+  cmd = { "ty", "server" },
+  filetypes = { "python" },
+  root_markers = { "ty.toml", "pyproject.toml", ".git" },
+  settings = {
+    ty = {
+      showSyntaxErrors = false,
+    },
+  },
 }

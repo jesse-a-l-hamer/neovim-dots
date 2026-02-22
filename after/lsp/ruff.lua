@@ -31,20 +31,23 @@ return { ---@type vim.lsp.Config
   root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" },
   trace = "messages",
   capabilities = {},
-  settings = {
-    logLevel = "debug",
-    linelength = 88,
-    lint = {
-      select = {
-        "E", -- pycodestyle
-        "F", -- Pyflakes
-        "UP", -- pyupgrade
-        "B", -- flake8-bugbear
-        "SIM", -- flake8-simplify
-        "I", -- isort
+  init_options = {
+    settings = {
+      logLevel = "info",
+      linelength = 88,
+      lint = {
+        select = {
+          "E", -- pycodestyle
+          "F", -- Pyflakes
+          "UP", -- pyupgrade
+          "B", -- flake8-bugbear
+          "SIM", -- flake8-simplify
+          "I", -- isort
+        },
       },
     },
   },
+
   on_attach = function(client, bufnr)
     client.server_capabilities.hoverProvider = false
   end,
