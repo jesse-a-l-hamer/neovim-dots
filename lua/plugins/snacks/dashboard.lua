@@ -1,5 +1,7 @@
 ---@module 'snacks'
-return { ---@type snacks.dashboard.Config
+
+---@type snacks.dashboard.Config
+return {
   preset = {
     keys = {
       { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
