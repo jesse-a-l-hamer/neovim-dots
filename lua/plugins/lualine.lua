@@ -10,7 +10,7 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons", "folke/noice.nvim" },
     opts = {
       options = {
-        theme = "catppuccin",
+        theme = "catppuccin-nvim",
         globalstatus = true,
         always_divide_middle = true,
       },
