@@ -10,7 +10,7 @@ return {
     render_modes = true,
     on = {},
     debounce = 50,
-    file_types = { "markdown", "blink-cmp-documentation" },
+    file_types = { "markdown", "blink-cmp-documentation", "codecompanion" },
     completions = { lsp = { enabled = true }, blink = { enabled = true } },
     heading = {
       width = "block",
