@@ -17,21 +17,15 @@ return {
   },
   sections = {
     { section = "header", padding = 1 },
-    {
-      section = "terminal",
-      cmd = "colorscript -e dna",
-      indent = 3,
-      height = 8,
-      padding = 1,
-    },
     { section = "keys", gap = 1 },
+    { section = "startup" },
     {
       section = "terminal",
-      cmd = "colorscript -e dna",
-      indent = 3,
-      height = 7,
-      padding = 1,
+      cmd = "fortune -s | cowsay -f ren; printf '\n%.0s' {1..6}",
+      pane = 2,
+      height = 24,
+      random = vim.fn.rand(),
+      indent = 2,
     },
-    { section = "startup" },
   },
 }
