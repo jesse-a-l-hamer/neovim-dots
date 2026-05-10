@@ -26,6 +26,7 @@ return {
       height = 24,
       random = vim.fn.rand(),
       indent = 2,
+      hl = "Float",
     },
   },
 }
