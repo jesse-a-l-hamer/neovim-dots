@@ -17,12 +17,13 @@ return {
       light = "latte",
       dark = "macchiato",
     },
-    show_end_of_buffer = true,
     dim_inactive = {
       enabled = true,
       shade = "dark",
       percentage = 0.15,
     },
+    transparent_background = true,
+    float = { transparent = true },
     default_integrations = false,
     auto_integrations = true,
     lsp_styles = {
@@ -45,7 +46,8 @@ return {
       },
     },
     custom_highlights = function(colors)
-      return { ---@type table<string, CtpHighlight>
+      ---@type table<string, CtpHighlight>
+      return {
         -- globals
         CursorLineNr = { fg = colors[accent_color] },
         FloatBorder = { fg = colors[accent_color] },
@@ -56,23 +58,9 @@ return {
       }
     end,
     integrations = {
-      blink_cmp = {
-        enabled = true,
-        style = "bordered",
-      },
-      colorful_winsep = {
-        enabled = true,
-        color = accent_color,
-      },
-      diffview = true,
-      flash = true,
-      lsp_trouble = true,
-      noice = true,
-      nvim_surround = true,
-      render_markdown = true,
-      snacks = { enabled = true, indent_scope_color = accent_color },
-      telescope = { enabled = false },
-      which_key = true,
+      blink_cmp = { style = "bordered" },
+      colorful_winsep = { color = accent_color },
+      snacks = { indent_scope_color = accent_color },
     },
   },
 }
