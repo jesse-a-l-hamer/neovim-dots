@@ -11,7 +11,10 @@ local function client_with_fn(fn)
     local bufnr = vim.api.nvim_get_current_buf()
     local client = vim.lsp.get_clients({ bufnr = bufnr, name = "texlab" })[1]
     if not client then
-      return vim.notify(("texlab client not found in bufnr %d"):format(bufnr), vim.log.levels.ERROR)
+      return vim.notify(
+        ("texlab client not found in bufnr %d"):format(bufnr),
+        vim.log.levels.ERROR
+      )
     end
     fn(client, bufnr)
   end
@@ -52,23 +55,26 @@ local function buf_search(client, bufnr)
 end
 
 local function buf_cancel_build(client, bufnr)
-  if vim.fn.has "nvim-0.11" == 1 then
-    return client:exec_cmd({
-      title = "cancel",
-      command = "texlab.cancelBuild",
-    }, { bufnr = bufnr })
-  end
-  vim.lsp.buf.execute_command { command = "texlab.cancelBuild" }
-  vim.notify("Build cancelled", vim.log.levels.INFO)
+  return client:exec_cmd({
+    title = "cancel",
+    command = "texlab.cancelBuild",
+  }, { bufnr = bufnr })
 end
 
 local function dependency_graph(client)
-  client:exec_cmd({ command = "texlab.showDependencyGraph" }, { bufnr = 0 }, function(err, result)
-    if err then
-      return vim.notify(err.code .. ": " .. err.message, vim.log.levels.ERROR)
+  client:exec_cmd(
+    { command = "texlab.showDependencyGraph" },
+    { bufnr = 0 },
+    function(err, result)
+      if err then
+        return vim.notify(err.code .. ": " .. err.message, vim.log.levels.ERROR)
+      end
+      vim.notify(
+        "The dependency graph has been generated:\n" .. result,
+        vim.log.levels.INFO
+      )
     end
-    vim.notify("The dependency graph has been generated:\n" .. result, vim.log.levels.INFO)
-  end)
+  )
 end
 
 local function command_factory(cmd)
@@ -78,25 +84,23 @@ local function command_factory(cmd)
     CancelBuild = "texlab.cancelBuild",
   }
   return function(client, bufnr)
-    if vim.fn.has "nvim-0.11" == 1 then
-      return client:exec_cmd({
-        title = ("clean_%s"):format(cmd),
-        command = cmd_tbl[cmd],
-        arguments = { { uri = vim.uri_from_bufnr(bufnr) } },
-      }, { bufnr = bufnr }, function(err, _)
-        if err then
-          vim.notify(("Failed to clean %s files: %s"):format(cmd, err.message), vim.log.levels.ERROR)
-        else
-          vim.notify(("command %s executed successfully"):format(cmd), vim.log.levels.INFO)
-        end
-      end)
-    end
-
-    vim.lsp.buf.execute_command {
+    return client:exec_cmd({
+      title = ("clean_%s"):format(cmd),
       command = cmd_tbl[cmd],
       arguments = { { uri = vim.uri_from_bufnr(bufnr) } },
-    }
-    vim.notify(("command %s executed successfully"):format(cmd_tbl[cmd]))
+    }, { bufnr = bufnr }, function(err, _)
+      if err then
+        vim.notify(
+          ("Failed to clean %s files: %s"):format(cmd, err.message),
+          vim.log.levels.ERROR
+        )
+      else
+        vim.notify(
+          ("command %s executed successfully"):format(cmd),
+          vim.log.levels.INFO
+        )
+      end
+    end)
   end
 end
 
@@ -135,21 +139,8 @@ local function buf_change_env(client, bufnr)
     return vim.notify("No environment name provided", vim.log.levels.WARN)
   end
   local pos = vim.api.nvim_win_get_cursor(0)
-  if vim.fn.has "nvim-0.11" == 1 then
-    return client:exec_cmd({
-      title = "change_environment",
-      command = "texlab.changeEnvironment",
-      arguments = {
-        {
-          textDocument = { uri = vim.uri_from_bufnr(bufnr) },
-          position = { line = pos[1] - 1, character = pos[2] },
-          newName = tostring(new),
-        },
-      },
-    }, { bufnr = bufnr })
-  end
-
-  vim.lsp.buf.execute_command {
+  return client:exec_cmd({
+    title = "change_environment",
     command = "texlab.changeEnvironment",
     arguments = {
       {
@@ -158,13 +149,20 @@ local function buf_change_env(client, bufnr)
         newName = tostring(new),
       },
     },
-  }
+  }, { bufnr = bufnr })
 end
 
 return {
   cmd = { "texlab" },
   filetypes = { "tex", "plaintex", "bib" },
-  root_markers = { ".git", ".latexmkrc", "latexmkrc", ".texlabroot", "texlabroot", "Tectonic.toml" },
+  root_markers = {
+    ".git",
+    ".latexmkrc",
+    "latexmkrc",
+    ".texlabroot",
+    "texlabroot",
+    "Tectonic.toml",
+  },
   settings = {
     texlab = {
       rootDirectory = nil,
@@ -193,29 +191,69 @@ return {
     },
   },
   on_attach = function(_, buf)
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabBuild", client_with_fn(buf_build), {
-      desc = "Build the current buffer",
-    })
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabForward", client_with_fn(buf_search), {
-      desc = "Forward search from current position",
-    })
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabCancelBuild", client_with_fn(buf_cancel_build), {
-      desc = "Cancel the current build",
-    })
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabDependencyGraph", client_with_fn(dependency_graph), {
-      desc = "Show the dependency graph",
-    })
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabCleanArtifacts", client_with_fn(command_factory "Artifacts"), {
-      desc = "Clean the artifacts",
-    })
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabCleanAuxiliary", client_with_fn(command_factory "Auxiliary"), {
-      desc = "Clean the auxiliary files",
-    })
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabFindEnvironments", client_with_fn(buf_find_envs), {
-      desc = "Find the environments at current position",
-    })
-    vim.api.nvim_buf_create_user_command(buf, "LspTexlabChangeEnvironment", client_with_fn(buf_change_env), {
-      desc = "Change the environment at current position",
-    })
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabBuild",
+      client_with_fn(buf_build),
+      {
+        desc = "Build the current buffer",
+      }
+    )
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabForward",
+      client_with_fn(buf_search),
+      {
+        desc = "Forward search from current position",
+      }
+    )
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabCancelBuild",
+      client_with_fn(buf_cancel_build),
+      {
+        desc = "Cancel the current build",
+      }
+    )
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabDependencyGraph",
+      client_with_fn(dependency_graph),
+      {
+        desc = "Show the dependency graph",
+      }
+    )
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabCleanArtifacts",
+      client_with_fn(command_factory "Artifacts"),
+      {
+        desc = "Clean the artifacts",
+      }
+    )
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabCleanAuxiliary",
+      client_with_fn(command_factory "Auxiliary"),
+      {
+        desc = "Clean the auxiliary files",
+      }
+    )
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabFindEnvironments",
+      client_with_fn(buf_find_envs),
+      {
+        desc = "Find the environments at current position",
+      }
+    )
+    vim.api.nvim_buf_create_user_command(
+      buf,
+      "LspTexlabChangeEnvironment",
+      client_with_fn(buf_change_env),
+      {
+        desc = "Change the environment at current position",
+      }
+    )
   end,
 }
