@@ -11,7 +11,36 @@ return {
     "ravitemer/mcphub.nvim",
   },
   opts = {
+    -- adapters = {
+    --   acp = {
+    --     opts = {
+    --       show_presets = false,
+    --     },
+    --   },
+    -- },
+    display = {
+      action_palette = {
+        provider = "snacks",
+      },
+    },
     interactions = {
+      background = {
+        adapter = {
+          name = "opencode",
+          model = "gemma4",
+        },
+        chat = {
+          ["on_ready"] = {
+            actions = {
+              "interactions.background.builtin.chat_make_title",
+            },
+            enabled = true,
+          },
+        },
+        opts = {
+          enabled = true,
+        },
+      },
       chat = {
         adapter = {
           name = "opencode",
@@ -25,7 +54,19 @@ return {
               default_params = "diff",
             },
           },
-        }
+        },
+      },
+      inline = {
+        adapter = {
+          name = "opencode",
+          model = "gemma4",
+        },
+      },
+      cmd = {
+        adapter = {
+          name = "opencode",
+          model = "gemma4",
+        },
       },
       cli = {
         agent = "opencode",

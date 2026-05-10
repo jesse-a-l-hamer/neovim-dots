@@ -44,6 +44,7 @@ return {
       },
       spec = {
         -- only keymap groups defined here; actual keymaps defined elsewhere
+        { "<leader>a", group = "AI Assistant" },
         { "<leader>d", group = "Debug" },
         { "<leader>f", group = "Find" },
         { "<leader>fp", group = "Picker" },
