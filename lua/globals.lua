@@ -47,6 +47,7 @@ vim.g.lsp_client_info = {
   ["^marksman"] = { doc_hover_opts = { footer_text = "  Marksman" } },
   ["^mutt_ls"] = { doc_hover_opts = { footer_text = "󰺻  mutt-language-server" } },
   ["^ruff"] = { doc_hover_opts = { footer_text = "  Ruff" } },
+  ["^rust-analyzer"] = { doc_hover_opts = { footer_text = " rust-analyzer" } },
   ["^systemd_ls"] = {
     doc_hover_opts = { footer_text = "  systemd-language-server" },
   },
