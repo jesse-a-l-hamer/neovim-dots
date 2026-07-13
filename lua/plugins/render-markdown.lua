@@ -25,6 +25,9 @@ return {
       width = "block",
       min_width = 44,
     },
+    latex = {
+      converter = {},
+    },
     quote = { repeat_linebreak = true },
     win_options = {
       showbreak = {
