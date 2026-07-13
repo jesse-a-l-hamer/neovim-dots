@@ -24,10 +24,13 @@ return {
       lint.linters_by_ft["text"] = nil
 
       -- enable desired linters:
-      lint.linters_by_ft["shell"] = { "shellcheck" }
       lint.linters_by_ft["bash"] = { "shellcheck" }
+      lint.linters_by_ft["beancount"] = { "bean_check" }
       lint.linters_by_ft["json"] = { "jsonlint" }
       lint.linters_by_ft["python"] = { "ruff" }
+      lint.linters_by_ft["shell"] = { "shellcheck" }
+      lint.linters_by_ft["toml"] = { "tombi" }
+      lint.linters_by_ft["zsh"] = { "zsh" }
 
       -- Create autocommand which carries out the actual linting
       -- on the specified events.

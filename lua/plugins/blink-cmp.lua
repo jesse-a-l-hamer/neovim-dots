@@ -328,6 +328,9 @@ return {
             "dictionary",
             "thesaurus",
           },
+          sql = {
+            "snippets", "dadbod", "buffer",
+          }
         },
         providers = {
           lazydev = {
@@ -424,6 +427,10 @@ return {
               search_extensions = { ".js", ".ts", ".jsx", ".tsx" },
             },
           },
+          dadbod = {
+            name = "Dadbod",
+            module = "vim_dadbod_completion.blink",
+          }
         },
       },
     },

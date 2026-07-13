@@ -42,18 +42,23 @@ vim.g.lsp_client_info = {
   ["^beancount-language-server"] = {
     doc_hover_opts = { footer_text = "  beancount-language-server" },
   },
+  ["^docker-language-server"] = { doc_hover_opts = { footer_text = " docker-language-server" } },
   ["^hyprls"] = { doc_hover_opts = { footer_text = " hyprls" } },
   ["^lua_ls"] = { doc_hover_opts = { footer_text = "  LuaLS" } },
   ["^marksman"] = { doc_hover_opts = { footer_text = "  Marksman" } },
   ["^mutt_ls"] = { doc_hover_opts = { footer_text = "󰺻  mutt-language-server" } },
   ["^ruff"] = { doc_hover_opts = { footer_text = "  Ruff" } },
   ["^rust-analyzer"] = { doc_hover_opts = { footer_text = " rust-analyzer" } },
+  ["^rust"] = { doc_hover_opts = { footer_text = " rustaceanvim" } },
+  ["^sql"] = { doc_hover_opts = { footer_text = " dadbod" } },
+  ["^superhtml"] = { doc_hover_opts = { footer_text = " superhtml" } },
   ["^systemd_ls"] = {
     doc_hover_opts = { footer_text = "  systemd-language-server" },
   },
   ["^taplo"] = { doc_hover_opts = { footer_text = "  Taplo" } },
   ["^texlab"] = { doc_hover_opts = { footer_text = "  Lab" } },
   ["^tinymist"] = { doc_hover_opts = { footer_text = " Tinymist" } },
+  ["^tombi"] = { doc_hover_opts = { footer_text = "  Tombi" } },
   ["^ty"] = { doc_hover_opts = { footer_text = "  ty" } },
   ["^yamlls"] = { doc_hover_opts = { footer_text = " YamlLS" } },
 }
