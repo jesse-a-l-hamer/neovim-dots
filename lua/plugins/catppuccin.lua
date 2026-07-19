@@ -24,7 +24,6 @@ return {
     },
     transparent_background = true,
     float = { transparent = true },
-    default_integrations = false,
     auto_integrations = true,
     lsp_styles = {
       virtual_text = {
