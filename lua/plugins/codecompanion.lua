@@ -27,7 +27,6 @@ return {
       background = {
         adapter = {
           name = "opencode",
-          model = "gemma4",
         },
         chat = {
           ["on_ready"] = {
@@ -44,7 +43,6 @@ return {
       chat = {
         adapter = {
           name = "opencode",
-          model = "gemma4",
         },
         editor_context = {
           ["buffer"] = {
@@ -59,13 +57,11 @@ return {
       inline = {
         adapter = {
           name = "opencode",
-          model = "gemma4",
         },
       },
       cmd = {
         adapter = {
           name = "opencode",
-          model = "gemma4",
         },
       },
       cli = {
