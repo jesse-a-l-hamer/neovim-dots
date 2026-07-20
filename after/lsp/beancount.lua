@@ -7,7 +7,7 @@
 ---@type vim.lsp.Config
 return {
   cmd = { "beancount-language-server", "--stdio" },
-  filetypes = { "beancount" },
+  filetypes = { "beancount", "bean" },
   root_markers = { "main.bean", ".git" },
   init_options = {
     journal_file = "main.bean",
@@ -20,8 +20,8 @@ return {
         num_width = 10,
         account_amount_spacing = 2,
         number_currency_spacing = 1,
-        prefix_width = 72
-      }
-    }
-  }
+        prefix_width = 72,
+      },
+    },
+  },
 }
