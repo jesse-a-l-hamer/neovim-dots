@@ -42,8 +42,11 @@ vim.g.lsp_client_info = {
   ["^beancount-language-server"] = {
     doc_hover_opts = { footer_text = "  beancount-language-server" },
   },
-  ["^docker-language-server"] = { doc_hover_opts = { footer_text = " docker-language-server" } },
+  ["^docker-language-server"] = {
+    doc_hover_opts = { footer_text = " docker-language-server" },
+  },
   ["^hyprls"] = { doc_hover_opts = { footer_text = " hyprls" } },
+  ["^jsonls"] = { doc_hover_opts = { footer_text = " jsonls" } },
   ["^lua_ls"] = { doc_hover_opts = { footer_text = "  LuaLS" } },
   ["^marksman"] = { doc_hover_opts = { footer_text = "  Marksman" } },
   ["^mutt_ls"] = { doc_hover_opts = { footer_text = "󰺻  mutt-language-server" } },
