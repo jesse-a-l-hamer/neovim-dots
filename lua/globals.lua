@@ -55,7 +55,7 @@ vim.g.lsp_client_info = {
   ["^rust"] = { doc_hover_opts = { footer_text = " rustaceanvim" } },
   ["^sql"] = { doc_hover_opts = { footer_text = " dadbod" } },
   ["^superhtml"] = { doc_hover_opts = { footer_text = " superhtml" } },
-  ["^systemd_ls"] = {
+  ["^systemd_lsp"] = {
     doc_hover_opts = { footer_text = "  systemd-language-server" },
   },
   ["^taplo"] = { doc_hover_opts = { footer_text = "  Taplo" } },
