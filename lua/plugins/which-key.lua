@@ -55,6 +55,7 @@ return {
         { "<leader>gg", group = "Lazygit", mode = { "n", "x" } },
         { "<leader>gr", group = "Reset", mode = { "n", "x" } },
         { "<leader>gs", group = "Stage", mode = { "n", "x" } },
+        { "<leader>R", group = "Kulala", mode = { "n", "x" } },
         { "<leader>l", group = "LSP", mode = { "n", "x" } },
         { "<leader>lg", group = "Goto", mode = { "n", "x" } },
         { "<leader>ls", group = "Search", mode = { "n", "x" } },
