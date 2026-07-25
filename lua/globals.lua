@@ -58,7 +58,7 @@ vim.g.lsp_client_info = {
   ["^systemd_lsp"] = {
     doc_hover_opts = { footer_text = "  systemd-language-server" },
   },
-  ["^taplo"] = { doc_hover_opts = { footer_text = "  Taplo" } },
+  ["^ts_ls"] = { doc_hover_opts = { footer_text = " typescript-language-server" } },
   ["^texlab"] = { doc_hover_opts = { footer_text = "  Lab" } },
   ["^tinymist"] = { doc_hover_opts = { footer_text = " Tinymist" } },
   ["^tombi"] = { doc_hover_opts = { footer_text = "  Tombi" } },
