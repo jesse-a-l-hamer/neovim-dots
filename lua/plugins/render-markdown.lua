@@ -26,7 +26,9 @@ return {
       min_width = 44,
     },
     latex = {
-      converter = {},
+      enabled = true,
+      -- comment/uncoment the following line to enable/disable latex rendering
+      -- converter = {},
     },
     quote = { repeat_linebreak = true },
     win_options = {
