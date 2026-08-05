@@ -205,6 +205,8 @@ return {
         ["<C-d>"] = { "scroll_signature_down", "fallback" },
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
         ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<Up>"] = {},
+        ["<Down>"] = {},
       },
       appearance = {
         nerd_font_variant = "mono",
